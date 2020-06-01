@@ -5,12 +5,12 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
-class Random(val rand:kotlin.random.Random) {
+class Random(val rand:java.util.Random) {
 
-    constructor() : this(kotlin.random.Random(0)) {
+    constructor() : this(java.util.Random(0)) {
     }
 
-    constructor(seed:Long) : this(kotlin.random.Random(seed)) {
+    constructor(seed:Long) : this(java.util.Random(seed)) {
     }
 
     fun getNext():Long {
@@ -26,6 +26,6 @@ class Random(val rand:kotlin.random.Random) {
         val ois = ObjectInputStream(
             ByteArrayInputStream(bo.toByteArray())
         )
-       return Random(ois.readObject() as kotlin.random.Random)
+       return Random(ois.readObject() as java.util.Random)
     }
 }

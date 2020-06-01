@@ -1,4 +1,3 @@
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.InstanceCreator
 import org.kindone.proptest.Generator
@@ -6,12 +5,7 @@ import org.kindone.proptest.KRandom
 import org.kindone.proptest.Property
 import org.kindone.proptest.Shrinkable
 //import proptest.GsonInterfaceAdapter
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import java.lang.reflect.Type
-import kotlin.random.Random
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.companionObject
@@ -70,8 +64,8 @@ val intGen = object: Generator<Int> {
 }
 
 println(Property.toCamelcase("asdf.cddf"))
-println(Property.create(primitive).forAll())
-println(Property.create(primitive1, intGen).forAll())
+println(Property.invoke(primitive).forAll())
+println(Property.invoke(primitive1, intGen).forAll())
 
 fun <T: Any> cast(any: Any, clazz: KClass<out T>): T = clazz.javaObjectType.cast(any)
 //
