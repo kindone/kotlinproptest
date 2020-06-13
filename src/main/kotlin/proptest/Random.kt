@@ -13,9 +13,11 @@ class Random(val rand:java.util.Random) {
     constructor(seed:Long) : this(java.util.Random(seed)) {
     }
 
-    fun getNext():Long {
-        return rand.nextLong()
-    }
+    fun nextLong():Long = rand.nextLong()
+    fun nextInt():Int = rand.nextInt()
+    fun nextBoolean():Boolean = rand.nextBoolean()
+    fun nextFloat():Float = rand.nextFloat()
+    fun nextDouble():Double = rand.nextDouble()
 
     fun clone():Random {
         val bo = ByteArrayOutputStream()

@@ -2,6 +2,8 @@ import com.google.gson.GsonBuilder
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.kindone.proptest.Property
+import kotlin.reflect.KClass
+import kotlin.reflect.full.createType
 
 class BasicTest : StringSpec() {
     init {
@@ -37,17 +39,36 @@ class BasicTest : StringSpec() {
             jrand2.nextInt() shouldBe jrand1.nextInt()
 
             val mrand1 = org.kindone.proptest.Random(5)
-            mrand1.getNext()
-            mrand1.getNext()
+            mrand1.nextLong()
+            mrand1.nextLong()
             val mrand2:org.kindone.proptest.Random = mrand1.clone()
-            mrand2.getNext() shouldBe mrand1.getNext()
+            mrand2.nextLong() shouldBe mrand1.nextLong()
         }
 
         "property test" {
-            val prop = Property({ a:Int, b:Int ->
+            val f:(Int,Int) -> Unit = { a:Int, b:Int ->
                 (a + b) shouldBe (b + a)
-            })
+            }
+            val prop = Property(f)
+
+            val kf = f::invoke
+            println(kf.typeParameters)
+            println(kf.parameters)
             prop.forAll()
         }
+
+        "generic reflection" {
+            val kc:KClass<*> = Int::class
+            println(kc.qualifiedName)
+            val kcg = List::class
+            println(kcg.qualifiedName)
+
+//            val kcgt = List<Int>::class.createType()
+            extract<List<Int>>()
+        }
+    }
+
+    inline fun <reified T:Any> extract() {
+        println(T::class.qualifiedName)
     }
 }
