@@ -1,5 +1,5 @@
 package org.kindone.proptest
 
-interface Generator<T> {
-    operator fun invoke(random: Random):Shrinkable<T>
+abstract class Generator<T> {
+    abstract operator fun invoke(random: Random):Shrinkable<T>
 }

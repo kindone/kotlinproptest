@@ -4,6 +4,9 @@ import io.kotest.matchers.shouldBe
 import org.kindone.proptest.Property
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createType
+import kotlin.reflect.KCallable
+import kotlin.reflect.KFunction
+import kotlin.reflect.jvm.reflect
 
 class BasicTest : StringSpec() {
     init {
@@ -50,10 +53,6 @@ class BasicTest : StringSpec() {
                 (a + b) shouldBe (b + a)
             }
             val prop = Property(f)
-
-            val kf = f::invoke
-            println(kf.typeParameters)
-            println(kf.parameters)
             prop.forAll()
         }
 
@@ -66,9 +65,51 @@ class BasicTest : StringSpec() {
 //            val kcgt = List<Int>::class.createType()
             extract<List<Int>>()
         }
+
+        "lambda test" {
+            val func1 = { a:Int, b:Int -> Unit
+                (a + b) shouldBe (b + a)
+            }
+            val kf = func1.reflect()!!
+            for(param in kf.parameters) {
+                println(param.type.classifier)
+                for(typeargs in param.type.arguments) {
+                    println(typeargs.type)
+                }
+            }
+            println(kf.returnType)
+
+            val func2 = { a:List<Int> -> Unit
+
+            }
+
+            val kf2 = func2.reflect()!!
+            for(param in kf2.parameters) {
+                println("classifier:" + param.type.classifier)
+                for(typeargs in param.type.arguments) {
+                    println("argument: " + typeargs.type)
+                }
+            }
+
+            val prop = Property(func2)
+            prop.forAll()
+
+            val a:List<Int> = emptyList()
+//            for(param in .parameters) {
+//                println("classifier:" + param.type.classifier)
+//                for(typeargs in param.type.arguments) {
+//                    println("argument: " + typeargs.type)
+//                }
+//            }
+
+//            val kf:KCallable<Unit> = func
+//            println(kf.parameters)
+
+        }
     }
 
     inline fun <reified T:Any> extract() {
         println(T::class.qualifiedName)
     }
+
 }
