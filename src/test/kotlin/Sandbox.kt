@@ -79,8 +79,7 @@ class BasicTest : StringSpec() {
             }
             println(kf.returnType)
 
-            val func2 = { a:List<Int> -> Unit
-
+            val func2 = { a:List<List<Int>> -> Unit
             }
 
             val kf2 = func2.reflect()!!

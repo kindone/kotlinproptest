@@ -6,9 +6,17 @@ class ArbitraryKotlinInt : Generator<Int>() {
     }
 }
 
-class ArbitraryKotlinCollectionsList<T>(elemGen:Generator<T>) : Generator<List<T>>() {
+class ArbitraryKotlinCollectionsList<T>(val elemGen:Generator<T>) : Generator<List<T>>() {
 
     override operator fun invoke(random:Random):Shrinkable<List<T>> {
-        return Shrinkable<List<T>>(emptyList<T>())
+        val size = Math.abs(random.nextInt()) % 4
+        val shrinkableList =
+        (0 until size).map {
+            elemGen(random)
+        }
+        val list = shrinkableList.map {
+            it.value
+        }
+        return Shrinkable<List<T>>(list)
     }
 }
