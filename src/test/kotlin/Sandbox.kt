@@ -1,6 +1,9 @@
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import org.kindone.proptest.ArbitraryKotlinCollectionsList
+import org.kindone.proptest.ArbitraryKotlinInt
 import org.kindone.proptest.Property
+import org.kindone.proptest.Random
 import org.kindone.proptest.generator.Util
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createType
@@ -77,6 +80,13 @@ class BasicTest : StringSpec() {
 
         "binarySearchShrinkable2" {
             val shrinkable = Util.binarySearchShrinkable(-8)
+            Util.exhaustive(shrinkable)
+        }
+
+        "shrink list" {
+            val listGen = ArbitraryKotlinCollectionsList<Int>(ArbitraryKotlinInt())
+            val rand = Random()
+            val shrinkable = listGen(rand)
             Util.exhaustive(shrinkable)
         }
     }

@@ -28,6 +28,10 @@ object Util {
         }
     }
 
+    fun binarySearchShrinkable(value:Int):Shrinkable<Int> {
+        return binarySearchShrinkable(value.toLong()).transform { it.toInt() }
+    }
+
     fun binarySearchShrinkable(value:Long):Shrinkable<Long> {
         return Shrinkable(value).with {
             if(value == 0L)
@@ -53,7 +57,45 @@ object Util {
         }
     }
 
-    fun <T> generateInteger(rand:Random, min:T, max:T) {
+    fun generateInteger(rand:Random, min:Int = Int.MIN_VALUE, max:Int = Int.MAX_VALUE):Shrinkable<Int> {
+        var value = 0
+        if(min == Int.MIN_VALUE && max == Int.MAX_VALUE && rand.nextBoolean()) {
+            value = if(rand.nextBoolean()) Int.MIN_VALUE else Int.MAX_VALUE
+        } else if(min == Int.MIN_VALUE && max == Int.MAX_VALUE){
+            value = rand.nextInt()
+        }
+        else
+            value = rand.fromTo(min, max)
 
+        if(value < min || max < value)
+            throw RuntimeException("invalid range")
+
+        if(min >= 0)
+            return binarySearchShrinkable(value - min).transform { it + min }
+        else if(max <= 0)
+            return binarySearchShrinkable(value - max).transform { it + max }
+        else
+            return binarySearchShrinkable(value)
+    }
+
+    fun generateLong(rand:Random, min:Long = Long.MIN_VALUE, max:Long = Long.MAX_VALUE):Shrinkable<Long> {
+        var value = 0L
+        if(min == Long.MIN_VALUE && max == Long.MAX_VALUE && rand.nextBoolean()) {
+            value = if(rand.nextBoolean()) Long.MIN_VALUE else Long.MAX_VALUE
+        } else if(min == Long.MIN_VALUE && max == Long.MAX_VALUE){
+            value = rand.nextLong()
+        }
+        else
+            value = rand.fromTo(min, max)
+
+        if(value < min || max < value)
+            throw RuntimeException("invalid range")
+
+        if(min >= 0)
+            return binarySearchShrinkable(value - min).transform { value -> value + min }
+        else if(max <= 0)
+            return binarySearchShrinkable(value - max).transform { value -> value + max }
+        else
+            return binarySearchShrinkable(value)
     }
 }
