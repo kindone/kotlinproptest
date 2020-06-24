@@ -108,7 +108,7 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
                 it.value.toUpperCase()
             }
             val dotRemoved = camelcase.replace(".", "")
-            return "org.kindone.proptest.Arbitrary" + dotRemoved
+            return "org.kindone.proptest.generator.Arbitrary" + dotRemoved
         }
 
         fun prepareGenerators(ktypes:List<KType>, explicitGens:List<Generator<*>?>):List<Generator<*>> {

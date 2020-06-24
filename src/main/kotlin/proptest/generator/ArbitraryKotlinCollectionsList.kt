@@ -1,19 +1,9 @@
-package org.kindone.proptest
+package org.kindone.proptest.generator
 
-import org.kindone.proptest.generator.Util
+import org.kindone.proptest.Generator
+import org.kindone.proptest.Random
+import org.kindone.proptest.Shrinkable
 import proptest.ContainerGenerator
-
-class ArbitraryKotlinInt : Generator<Int>() {
-    override operator fun invoke(random:Random):Shrinkable<Int> {
-        return Util.generateInteger(random)
-    }
-}
-
-class ArbitraryKotlinLong : Generator<Long>() {
-    override operator fun invoke(random:Random):Shrinkable<Long> {
-        return Util.generateLong(random)
-    }
-}
 
 class ArbitraryKotlinCollectionsList<T>(val elemGen:Generator<T>) : ContainerGenerator<List<T>>() {
 

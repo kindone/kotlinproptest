@@ -1,14 +1,11 @@
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import org.kindone.proptest.ArbitraryKotlinCollectionsList
-import org.kindone.proptest.ArbitraryKotlinInt
+import org.kindone.proptest.generator.ArbitraryKotlinCollectionsList
+import org.kindone.proptest.generator.ArbitraryKotlinInt
 import org.kindone.proptest.Property
 import org.kindone.proptest.Random
 import org.kindone.proptest.generator.Util
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createType
-import kotlin.reflect.KCallable
-import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.reflect
 
 class BasicTest : StringSpec() {
