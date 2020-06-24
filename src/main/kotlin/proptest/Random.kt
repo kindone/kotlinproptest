@@ -19,6 +19,11 @@ class Random(val rand:java.util.Random) {
     fun nextFloat():Float = rand.nextFloat()
     fun nextDouble():Double = rand.nextDouble()
 
+    fun fromTo(min:Int, max:Int):Int = min + (nextInt() % (max+1-min))
+    fun fromTo(min:Long, max:Long):Long = min + (nextLong() % (max+1-min))
+    fun inRange(from:Int, to:Int):Int = from + (nextInt() % (to-from))
+    fun inRange(from:Long, to:Long):Long = from + (nextLong() % (to-from))
+
     fun clone():Random {
         val bo = ByteArrayOutputStream()
         val oos = ObjectOutputStream(bo)

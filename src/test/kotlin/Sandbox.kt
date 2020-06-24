@@ -1,7 +1,7 @@
-import com.google.gson.GsonBuilder
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.kindone.proptest.Property
+import org.kindone.proptest.generator.Util
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createType
 import kotlin.reflect.KCallable
@@ -15,32 +15,6 @@ class BasicTest : StringSpec() {
         }
 
         "cloning random" {
-            val gsonBuilder  = GsonBuilder()
-            /*
-            class KRandomCreator : InstanceCreator<Random> {
-                override fun createInstance(type: Type): Random {
-                    return Random(0)
-                }
-            }
-
-            gsonBuilder.registerTypeAdapter(kotlin.random.Random::class.java, KRandomCreator())
-            val rand1 = Random(6)
-            println(rand1.nextInt())
-            println(rand1.nextInt())
-            val rand2:Random = gson.fromJson(gson.toJson(rand1), kotlin.random.Random::class.java)
-            println(rand2.nextInt())
-            println(rand1.nextInt())
-            */
-
-            val gson = gsonBuilder.create()
-
-
-            val jrand1 = java.util.Random(5)
-            jrand1.nextInt()
-            jrand1.nextInt()
-            val jrand2:java.util.Random = gson.fromJson(gson.toJson(jrand1), java.util.Random::class.java)
-            jrand2.nextInt() shouldBe jrand1.nextInt()
-
             val mrand1 = org.kindone.proptest.Random(5)
             mrand1.nextLong()
             mrand1.nextLong()
@@ -94,16 +68,16 @@ class BasicTest : StringSpec() {
             prop.forAll()
 
             val a:List<Int> = emptyList()
-//            for(param in .parameters) {
-//                println("classifier:" + param.type.classifier)
-//                for(typeargs in param.type.arguments) {
-//                    println("argument: " + typeargs.type)
-//                }
-//            }
+        }
 
-//            val kf:KCallable<Unit> = func
-//            println(kf.parameters)
+        "binarySearchShrinkable1" {
+            val shrinkable = Util.binarySearchShrinkable(8)
+            Util.exhaustive(shrinkable)
+        }
 
+        "binarySearchShrinkable2" {
+            val shrinkable = Util.binarySearchShrinkable(-8)
+            Util.exhaustive(shrinkable)
         }
     }
 

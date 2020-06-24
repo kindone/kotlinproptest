@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="kotlinproptest.main:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/kotlinproptest_main_jar</output-path>
+    <root id="archive" name="kotlinproptest.main.jar">
+      <element id="module-output" name="kotlinproptest.main" />
+    </root>
+  </artifact>
+</component>

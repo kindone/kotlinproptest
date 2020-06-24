@@ -3,6 +3,10 @@ package org.kindone.proptest
 class Shrinkable<T>(val value:T, val shrinksGen:() -> Sequence<Shrinkable<T>>) {
     constructor(value:T) : this(value, { -> emptySequence<Shrinkable<T>>() })
 
+    override fun toString():String {
+        return value.toString()
+    }
+
     fun shrinks():Sequence<Shrinkable<T>> = shrinksGen()
 
     fun with(shrinksGen:() -> Sequence<Shrinkable<T>>):Shrinkable<T> {

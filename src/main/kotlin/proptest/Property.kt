@@ -14,9 +14,6 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
 
     private var seed:Long = 0
 
-    init {
-    }
-
     fun runner(rand:Random) {
         lateinit var savedRandom:Random
         try {
