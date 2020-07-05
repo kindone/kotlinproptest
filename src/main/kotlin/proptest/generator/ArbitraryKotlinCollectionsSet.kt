@@ -4,16 +4,18 @@ import org.kindone.proptest.Generator
 import org.kindone.proptest.Random
 import org.kindone.proptest.Shrinkable
 import proptest.ContainerGenerator
-import proptest.shrinker.ShrinkableList
+import proptest.shrinker.ShrinkableSet
 
-class ArbitraryKotlinCollectionsList<T>(val elemGen:Generator<T>) : ContainerGenerator<List<T>>() {
+class ArbitraryKotlinCollectionsSet<T>(val elemGen:Generator<T>) : ContainerGenerator<Set<T>>() {
 
-    override operator fun invoke(random:Random):Shrinkable<List<T>> {
+    override operator fun invoke(random:Random):Shrinkable<Set<T>> {
         val size = random.fromTo(minSize, maxSize)
-        val list = (0 until size).map {
-            elemGen(random)
+        val set = emptySet<Shrinkable<T>>().toMutableSet()
+        while (set.size < size) {
+            set.add(elemGen(random))
         }
-        return ShrinkableList<T>(list, minSize)
+
+        return ShrinkableSet(set, minSize)
     }
 
     override fun setSize(min: Int, max: Int) {

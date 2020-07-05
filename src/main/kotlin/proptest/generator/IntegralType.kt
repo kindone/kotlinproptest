@@ -1,9 +1,10 @@
 package org.kindone.proptest.generator
 
+import org.kindone.proptest.Generator
 import org.kindone.proptest.Random
 import org.kindone.proptest.Shrinkable
 
-object Util {
+object IntegralType {
 
 
     private fun genpos(min:Long, max:Long):Sequence<Shrinkable<Long>> {
@@ -97,5 +98,21 @@ object Util {
             return binarySearchShrinkable(value - max).transform { value -> value + max }
         else
             return binarySearchShrinkable(value)
+    }
+
+    fun fromTo(min:Int, max:Int):Generator<Int> {
+        return object: Generator<Int>() {
+            override fun invoke(random: Random): Shrinkable<Int> {
+                return generateInteger(random, min, max)
+            }
+        }
+    }
+
+    fun fromTo(min:Long, max:Long):Generator<Long> {
+        return object: Generator<Long>() {
+            override fun invoke(random: Random): Shrinkable<Long> {
+                return generateLong(random, min, max)
+            }
+        }
     }
 }

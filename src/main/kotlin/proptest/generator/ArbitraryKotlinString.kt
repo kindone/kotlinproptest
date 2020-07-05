@@ -4,16 +4,17 @@ import org.kindone.proptest.Generator
 import org.kindone.proptest.Random
 import org.kindone.proptest.Shrinkable
 import proptest.ContainerGenerator
+import proptest.generator.StringType
 import proptest.shrinker.ShrinkableList
 
-class ArbitraryKotlinCollectionsList<T>(val elemGen:Generator<T>) : ContainerGenerator<List<T>>() {
+class ArbitraryKotlinString(val elemGen:Generator<Char> = StringType.genASCII()) : ContainerGenerator<String>() {
 
-    override operator fun invoke(random:Random):Shrinkable<List<T>> {
+    override operator fun invoke(random:Random):Shrinkable<String> {
         val size = random.fromTo(minSize, maxSize)
         val list = (0 until size).map {
             elemGen(random)
         }
-        return ShrinkableList<T>(list, minSize)
+        return ShrinkableList<Char>(list, minSize).transform { String(it.toCharArray()) }
     }
 
     override fun setSize(min: Int, max: Int) {

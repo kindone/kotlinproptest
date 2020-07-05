@@ -4,7 +4,7 @@ import org.kindone.proptest.generator.ArbitraryKotlinCollectionsList
 import org.kindone.proptest.generator.ArbitraryKotlinInt
 import org.kindone.proptest.Property
 import org.kindone.proptest.Random
-import org.kindone.proptest.generator.Util
+import org.kindone.proptest.generator.IntegralType
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.reflect
 
@@ -66,25 +66,24 @@ class BasicTest : StringSpec() {
 
             val prop = Property(func2)
             prop.forAll()
-
-            val a:List<Int> = emptyList()
         }
 
+
         "binarySearchShrinkable1" {
-            val shrinkable = Util.binarySearchShrinkable(8)
-            Util.exhaustive(shrinkable)
+            val shrinkable = IntegralType.binarySearchShrinkable(8)
+            IntegralType.exhaustive(shrinkable)
         }
 
         "binarySearchShrinkable2" {
-            val shrinkable = Util.binarySearchShrinkable(-8)
-            Util.exhaustive(shrinkable)
+            val shrinkable = IntegralType.binarySearchShrinkable(-8)
+            IntegralType.exhaustive(shrinkable)
         }
 
         "shrink list" {
             val listGen = ArbitraryKotlinCollectionsList<Int>(ArbitraryKotlinInt())
             val rand = Random()
             val shrinkable = listGen(rand)
-            Util.exhaustive(shrinkable)
+            IntegralType.exhaustive(shrinkable)
         }
     }
 

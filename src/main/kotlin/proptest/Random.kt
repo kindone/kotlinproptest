@@ -19,9 +19,9 @@ class Random(val rand:java.util.Random) {
     fun nextFloat():Float = rand.nextFloat()
     fun nextDouble():Double = rand.nextDouble()
 
-    fun fromTo(min:Int, max:Int):Int = min + (Math.abs(nextLong()).toInt() % (max+1-min))
+    fun fromTo(min:Int, max:Int):Int = min + (Math.abs(nextLong().toInt()) % (max+1-min))
     fun fromTo(min:Long, max:Long):Long = min + (Math.abs(nextLong()) % (max+1-min))
-    fun inRange(from:Int, to:Int):Int = from + (Math.abs(nextLong()).toInt() % (to-from))
+    fun inRange(from:Int, to:Int):Int = from + (Math.abs(nextLong().toInt()) % (to-from))
     fun inRange(from:Long, to:Long):Long = from + (Math.abs(nextLong()) % (to-from))
 
     fun clone():Random {
