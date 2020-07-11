@@ -7,4 +7,8 @@ object StringType {
     fun genASCII():Generator<Char> {
         return IntegralType.fromTo(0x1, 0x7F).transform { it.toChar() }
     }
+
+    fun genUnicode():Generator<Char> {
+        return IntegralType.fromTo(0x1, 0x10FFFF).transform { it.toChar() }
+    }
 }

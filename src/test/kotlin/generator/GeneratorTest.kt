@@ -2,6 +2,7 @@ package generator
 
 import io.kotest.core.spec.style.StringSpec
 import org.kindone.proptest.Property
+import proptest.combinator.Construct
 
 class GeneratorTest : StringSpec() {
     init {
@@ -21,6 +22,14 @@ class GeneratorTest : StringSpec() {
 
             val prop = Property(func)
             prop.forAll()
+        }
+
+        "Construct" {
+            class SomeClass(val a:Int) {
+
+            }
+            Construct<SomeClass>()
+            Construct<SomeClass, Int>(10)
         }
     }
 }
