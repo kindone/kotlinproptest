@@ -101,6 +101,14 @@ class BasicTest : StringSpec() {
             IntegralType.exhaustive(shrinkable)
         }
 
+        "shrink tuple1" {
+            val intGen = IntegralType.fromTo(0, 10)
+            val tupleGen = ArbitraryTuple(listOf<Generator<*>>(intGen))
+            val rand = Random()
+            val shrinkable = tupleGen(rand)
+            IntegralType.exhaustive(shrinkable)
+        }
+
         "shrink tuple" {
             val intGen = IntegralType.fromTo(0, 10)
             val tupleGen = ArbitraryTuple(listOf<Generator<*>>(intGen, intGen, intGen))
