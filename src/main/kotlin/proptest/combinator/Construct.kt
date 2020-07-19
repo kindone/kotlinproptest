@@ -16,12 +16,13 @@ class Construct {
         inline operator fun <reified T, reified T1:Any> invoke(t1Gen: Generator<T1>? = null):Generator<T> {
 
             val kt = T::class.createType()
-            val generators = Property.prepareGenerators(listOf(kt), listOf(t1Gen))
+            val kt1 = T1::class.createType()
+            val generators = Property.prepareGenerators(listOf(kt1), listOf(t1Gen))
 
             return object: Generator<T>() {
                 override fun invoke(random: Random): Shrinkable<T> {
-                    return generators[0](random).transform {
-                        val arg1 = it as T1
+                    return (generators[0] as Generator<T1>)(random).transform {
+                        val arg1 = it
                         T::class.java.getDeclaredConstructor(T1::class.java).newInstance(arg1) as T
                     }
 

@@ -29,7 +29,7 @@ class GeneratorTest : StringSpec() {
 
             }
             Construct<SomeClass>()
-            Construct<SomeClass, Int>(10)
+            Construct<SomeClass, Int>()
         }
     }
 }

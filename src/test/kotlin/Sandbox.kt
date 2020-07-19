@@ -4,6 +4,7 @@ import org.kindone.proptest.generator.ArbitraryKotlinCollectionsList
 import org.kindone.proptest.generator.ArbitraryKotlinInt
 import org.kindone.proptest.Property
 import org.kindone.proptest.Random
+import org.kindone.proptest.generator.ArbitraryKotlinPair
 import org.kindone.proptest.generator.IntegralType
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.reflect
@@ -83,6 +84,14 @@ class BasicTest : StringSpec() {
             val listGen = ArbitraryKotlinCollectionsList<Int>(ArbitraryKotlinInt())
             val rand = Random()
             val shrinkable = listGen(rand)
+            IntegralType.exhaustive(shrinkable)
+        }
+
+        "shrink pair" {
+            val intGen = IntegralType.fromTo(0, 10)
+            val pairGen = ArbitraryKotlinPair<Int,Int>(intGen, intGen)
+            val rand = Random()
+            val shrinkable = pairGen(rand)
             IntegralType.exhaustive(shrinkable)
         }
     }

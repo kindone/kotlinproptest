@@ -12,14 +12,20 @@ class ArbitraryKotlinPair<A,B>(val aGen:Generator<A>, val bGen:Generator<B>) : G
     }
 
     companion object {
-        fun <A,B> ShrinkablePair(pair:Pair<Shrinkable<A>,Shrinkable<B>>):Shrinkable<Pair<A,B>> {
-            val shrinkable = Shrinkable(Pair(pair.first.value, pair.second.value))
-
-            shrinkable.concat { parent->
-                parent.value.first
-                pair.first.shrinks()
+        fun <A,B> ShrinkablePair(pair:Pair<Shrinkable<A>,Shrinkable<B>>) : Shrinkable<Pair<A,B>> {
+            // expand A first
+            val shrAB = pair.first.transform {
+                Pair(it, pair.second)
             }
-            return shrinkable
+            // expand B
+            return shrAB.concat {  parent ->
+                parent.value.second.shrinks().map {
+                    Shrinkable(Pair(parent.value.first, it))
+                }
+            }.transform {
+                // convert it to correct form
+                Pair(it.first, it.second.value)
+            }
         }
     }
 }
