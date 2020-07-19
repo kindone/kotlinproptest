@@ -59,14 +59,14 @@ object IntegralType {
     }
 
     fun generateInteger(rand:Random, min:Int = Int.MIN_VALUE, max:Int = Int.MAX_VALUE):Shrinkable<Int> {
-        var value = 0
-        if(min == Int.MIN_VALUE && max == Int.MAX_VALUE && rand.nextBoolean()) {
-            value = if(rand.nextBoolean()) Int.MIN_VALUE else Int.MAX_VALUE
-        } else if(min == Int.MIN_VALUE && max == Int.MAX_VALUE){
-            value = rand.nextInt()
-        }
-        else
-            value = rand.fromTo(min, max)
+        var value =
+            if(min == Int.MIN_VALUE && max == Int.MAX_VALUE && rand.nextBoolean()) {
+                if(rand.nextBoolean()) Int.MIN_VALUE else Int.MAX_VALUE
+            } else if(min == Int.MIN_VALUE && max == Int.MAX_VALUE){
+                rand.nextInt()
+            }
+            else
+                rand.fromTo(min, max)
 
         if(value < min || max < value)
             throw RuntimeException("invalid range")

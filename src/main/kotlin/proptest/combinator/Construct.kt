@@ -94,7 +94,7 @@ class Construct {
         }
 
         inline operator fun <reified T, reified T1:Any> invoke(t1Gen: Generator<T1>? = null):Generator<T> {
-            val gens = Property.prepareGenerators(listOf(T1::class.createType()), listOf(t1Gen))
+            val gens = Generator.prepare(listOf(T1::class.createType()), listOf(t1Gen))
             val transformer = { shrinkables:List<Shrinkable<*>> ->
                 ShrinkableTuple(shrinkables).transform {
                     T::class.java.getDeclaredConstructor(javaTypeOf<T1>()).newInstance(asJavaType<T1>(it[0]!!)) as T
@@ -104,7 +104,7 @@ class Construct {
         }
 
         inline operator fun <reified T, reified T1:Any, reified T2:Any> invoke(t1Gen: Generator<T1>? = null, t2Gen:Generator<T2>? = null):Generator<T> {
-            val gens = Property.prepareGenerators(listOf(T1::class.createType(), T2::class.createType()), listOf(t1Gen, t2Gen))
+            val gens = Generator.prepare(listOf(T1::class.createType(), T2::class.createType()), listOf(t1Gen, t2Gen))
             val transformer = { shrinkables:List<Shrinkable<*>> ->
                 ShrinkableTuple(shrinkables).transform {
                     T::class.java.getDeclaredConstructor(javaTypeOf<T1>(), javaTypeOf<T2>()).newInstance(asJavaType<T1>(it[0]!!), asJavaType<T2>(it[1]!!)) as T

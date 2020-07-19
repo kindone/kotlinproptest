@@ -50,7 +50,7 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
     companion object {
         val numRuns = 10
 
-        inline fun getParameterTypes(f:Function<Unit>):List<KType> {
+        fun getParameterTypes(f:Function<Unit>):List<KType> {
             val kf = f.reflect()!!
             val ktypes = kf.parameters.map { param ->
                 val ktype= param.type.classifier!!.createType(param.type.arguments.map { KTypeProjection.invariant(it.type!!) })
@@ -62,7 +62,7 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
 
         inline operator fun <reified T1:Any> invoke(noinline f:(T1) -> Unit,
                                            t1Gen:Generator<T1>? = null):Property {
-            val generators = prepareGenerators(getParameterTypes(f), listOf<Generator<*>?>(t1Gen))
+            val generators = Generator.prepare(getParameterTypes(f), listOf<Generator<*>?>(t1Gen))
             val invoker = { f:Function<Unit>, shrinkables:List<Shrinkable<*>> ->
                 f(shrinkables[0].value as T1)
             }
@@ -71,7 +71,7 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
 
         inline operator fun <reified T1:Any, reified T2:Any> invoke(noinline f:(T1, T2) -> Unit,
                                                            t1Gen:Generator<T1>? = null, t2Gen:Generator<T2>? = null):Property {
-            val generators = prepareGenerators(getParameterTypes(f), listOf<Generator<*>?>(t1Gen, t2Gen))
+            val generators = Generator.prepare(getParameterTypes(f), listOf<Generator<*>?>(t1Gen, t2Gen))
             val invoker = { f:Function<Unit>, shrinkables:List<Shrinkable<*>> ->
                 f(shrinkables[0].value as T1, shrinkables[1].value as T2)
             }
@@ -80,7 +80,7 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
 
         inline operator fun <reified T1:Any, reified T2:Any, reified T3:Any> invoke(noinline f:(T1, T2, T3) -> Unit,
                                                                            t1Gen:Generator<T1>? = null, t2Gen:Generator<T2>? = null, t3Gen:Generator<T3>? = null):Property {
-            val generators = prepareGenerators(getParameterTypes(f), listOf<Generator<*>?>(t1Gen, t2Gen, t3Gen))
+            val generators = Generator.prepare(getParameterTypes(f), listOf<Generator<*>?>(t1Gen, t2Gen, t3Gen))
             val invoker = { f:Function<Unit>, shrinkables:List<Shrinkable<*>> ->
                 f(shrinkables[0].value as T1, shrinkables[1].value as T2, shrinkables[2].value as T3)
             }
@@ -89,7 +89,7 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
 
         inline operator fun <reified T1:Any, reified T2:Any, reified T3:Any, reified T4:Any> invoke(noinline f:(T1, T2, T3, T4) -> Unit,
                                                                                     t1Gen:Generator<T1>? = null, t2Gen:Generator<T2>? = null, t3Gen:Generator<T3>? = null, t4Gen:Generator<T4>? = null):Property {
-            val generators = prepareGenerators(getParameterTypes(f), listOf<Generator<*>?>(t1Gen, t2Gen, t3Gen, t4Gen))
+            val generators = Generator.prepare(getParameterTypes(f), listOf<Generator<*>?>(t1Gen, t2Gen, t3Gen, t4Gen))
             val invoker = { f:Function<Unit>, shrinkables:List<Shrinkable<*>> ->
                 f(shrinkables[0].value as T1, shrinkables[1].value as T2, shrinkables[2].value as T3, shrinkables[3].value as T4)
             }
@@ -109,12 +109,6 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
             }
             val dotRemoved = camelcase.replace(".", "")
             return "org.kindone.proptest.generator.Arbitrary" + dotRemoved
-        }
-
-        fun prepareGenerators(ktypes:List<KType>, explicitGens:List<Generator<*>?>):List<Generator<*>> {
-            return ktypes.mapIndexed { index, ktype ->
-                explicitGens[index] ?: getArbitraryOf(ktype)
-            }
         }
 
         fun getArbitraryOf(ktype:KType):Generator<*> {
