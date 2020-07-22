@@ -3,13 +3,20 @@ package generator
 import io.kotest.core.spec.style.StringSpec
 import org.kindone.proptest.Property
 import org.kindone.proptest.Random
-import org.kindone.proptest.generator.ArbitraryKotlinInt
+import org.kindone.proptest.generator.ArbitraryKotlinCollectionsList
 import org.kindone.proptest.generator.ArbitraryKotlinString
+import org.kindone.proptest.generator.ArbitraryOrgKindonePropTestTypeNullable
 import org.kindone.proptest.generator.IntegralType
 import proptest.combinator.Construct
-import proptest.generator.StringType
+import proptest.type.Nullable
+import kotlin.reflect.jvm.reflect
 
 class GeneratorTest : StringSpec() {
+    inline fun  <reified T1:Any, reified T2:Any> reflectFunc(noinline f:(T1, T2) -> Unit) {
+        val kt = f.reflect()!!
+        kt.parameters
+    }
+
     init {
 //        "Map Property Test" {
 //            val func = { a:Map<Int, Boolean> ->
@@ -60,6 +67,35 @@ class GeneratorTest : StringSpec() {
             IntegralType.exhaustive(shrinkable)
         }
 
+        "Construct1.generic" {
+            class SomeClass(val l:List<Int>) {
+                override fun toString(): String {
+                    return "SomeClass($l)"
+                }
+            }
+            val intGen = IntegralType.fromTo(0,10)
+            val intListGen = ArbitraryKotlinCollectionsList<Int>(intGen)
+            val someClassGen = Construct<SomeClass, List<Int>>(intListGen)
+            val rand = Random()
+            val shrinkable = someClassGen(rand)
+            IntegralType.exhaustive(shrinkable)
+        }
+
+        "Construct1.nullable" {
+            class SomeClass(val i:Int?) {
+                override fun toString(): String {
+                    return "SomeClass($i!!)"
+                }
+            }
+
+            val intGen = IntegralType.fromTo(0,10)
+            val nullableIntGen = ArbitraryOrgKindonePropTestTypeNullable(intGen)
+            val someClassGen = Construct<SomeClass, Int?>(nullableIntGen)
+            val rand = Random()
+            val shrinkable = someClassGen(rand)
+            IntegralType.exhaustive(shrinkable)
+        }
+
         "Construct2" {
             class SomeClass(val i:Int, val a:String) {
                 override fun toString(): String {
@@ -73,5 +109,7 @@ class GeneratorTest : StringSpec() {
             val shrinkable = someClassGen(rand)
             IntegralType.exhaustive(shrinkable)
         }
+
+
     }
 }

@@ -40,7 +40,13 @@ class BasicTest : StringSpec() {
         }
 
         "lambda test" {
-            val func1 = { a:Int, b:Int -> Unit
+            class SomeClass(val i:Int?) {
+
+            }
+
+            println("constructors: " + SomeClass::class.constructors)
+
+            val func1 = { a:Int, b:Int, c:Int? -> Unit
                 (a + b) shouldBe (b + a)
             }
             val kf = func1.reflect()!!
@@ -65,6 +71,10 @@ class BasicTest : StringSpec() {
 
             val prop = Property(func2)
             prop.forAll()
+
+            Property({ a: Int -> Unit
+
+            })
         }
 
 

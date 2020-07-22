@@ -1,11 +1,18 @@
 package proptest.combinator
 
 import org.kindone.proptest.Generator
-import org.kindone.proptest.Property
 import org.kindone.proptest.Random
 import org.kindone.proptest.Shrinkable
 import proptest.shrinker.ShrinkableTuple
+import proptest.type.NotNull
+import proptest.type.Null
+import proptest.type.Nullable
+import java.lang.reflect.ParameterizedType
+import kotlin.reflect.KClass
+import kotlin.reflect.KType
+import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
+import kotlin.reflect.full.starProjectedType
 
 class Construct {
     companion object {
@@ -25,6 +32,13 @@ class Construct {
         }
 
         inline fun <reified T> unbox(obj:Any):Any? {
+            if(T::class == Nullable::class) {
+                val nullable: Nullable<*> = obj as Nullable<*>
+                if(nullable.isNull)
+                    return null
+                else
+                    return (nullable as NotNull<*>).obj
+            }
             if(T::class == Boolean::class) {
                 val unboxed:Boolean? = (obj as Boolean)
                 return unboxed
@@ -61,7 +75,9 @@ class Construct {
             return obj
         }
 
-        inline fun <reified T> isPrimitive():Boolean {
+        inline fun <reified T:Any?> isPrimitive():Boolean {
+            if(T::class == Nullable::class)
+                return false
             if(T::class == Boolean::class)
                 return true
             if(T::class == Byte::class)
@@ -82,22 +98,29 @@ class Construct {
             return false
         }
 
-        inline fun <reified T : Any> javaTypeOf():Class<*>? {
-            if(isPrimitive<T>())
-                return T::class.javaPrimitiveType
+        inline fun <reified T : Any?> javaTypeOf(obj:Any? = null):Class<*>? {
+            println("javaTypeOf: " + T::class)
+            if(T::class == Nullable::class) {
+                val nullable = (obj!! as Nullable<*>)
+                return if(nullable.isNull) KType::class.java else T::class.java
+            }
+            else if(isPrimitive<T>()) {
+                val kc = T::class as KClass<*>
+                return kc.javaPrimitiveType
+            }
             else
                 return T::class.java
         }
 
-        inline fun <reified T : Any> asJavaType(obj:Any):Any? {
+        inline fun <reified T : Any?> asJavaType(obj:Any):Any? {
             return if(isPrimitive<T>()) unbox<T>(obj) else obj
         }
 
-        inline operator fun <reified T, reified T1:Any> invoke(t1Gen: Generator<T1>? = null):Generator<T> {
-            val gens = Generator.prepare(listOf(T1::class.createType()), listOf(t1Gen))
+        inline operator fun <reified T, reified T1:Any?> invoke(t1Gen: Generator<T1>? = null):Generator<T> {
+            val gens = Generator.prepare(listOf(T1::class.createType(T1::class.starProjectedType.arguments)), listOf(t1Gen))
             val transformer = { shrinkables:List<Shrinkable<*>> ->
                 ShrinkableTuple(shrinkables).transform {
-                    T::class.java.getDeclaredConstructor(javaTypeOf<T1>()).newInstance(asJavaType<T1>(it[0]!!)) as T
+                    T::class.java.getDeclaredConstructor(javaTypeOf<T1>(it[0]!!)).newInstance(asJavaType<T1>(it[0]!!)) as T
                 }
             }
             return createGenerator(gens, transformer)
