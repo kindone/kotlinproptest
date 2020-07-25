@@ -47,7 +47,7 @@ class OneOf {
                 override fun invoke(random: Random): Shrinkable<T> {
                     while(true) {
                         val dice = random.inRange(0, weightedGenerators.size)
-                        if(random.nextBoolean(/*weightedGenerators[dice].weight)*/)) {
+                        if(random.nextBoolean(weightedGenerators[dice].weight)) {
                             return weightedGenerators[dice].gen(random)
                         }
                     }

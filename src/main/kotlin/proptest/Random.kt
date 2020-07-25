@@ -15,7 +15,8 @@ class Random(val rand:java.util.Random) {
 
     fun nextLong():Long = rand.nextLong()
     fun nextInt():Int = rand.nextInt()
-    fun nextBoolean(trueProp:Double = 0.5):Boolean = rand.nextBoolean()
+    // TODO
+    fun nextBoolean(trueProb:Double = 0.5):Boolean = rand.nextBoolean()
     fun nextFloat():Float = rand.nextFloat()
     fun nextDouble():Double = rand.nextDouble()
 
