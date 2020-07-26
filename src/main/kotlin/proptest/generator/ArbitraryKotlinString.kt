@@ -10,7 +10,7 @@ import proptest.shrinker.ShrinkableList
 class ArbitraryKotlinString(val elemGen:Generator<Char> = StringType.genASCII()) : ContainerGenerator<String>() {
 
     override operator fun invoke(random:Random):Shrinkable<String> {
-        val size = random.fromTo(minSize, maxSize)
+        val size = random.interval(minSize, maxSize)
         val list = (0 until size).map {
             elemGen(random)
         }

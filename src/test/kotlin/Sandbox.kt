@@ -96,7 +96,7 @@ class BasicTest : StringSpec() {
         }
 
         "shrink pair" {
-            val intGen = IntegralType.fromTo(0, 10)
+            val intGen = IntegralType.interval(0, 10)
             val pairGen = ArbitraryKotlinPair<Int,Int>(intGen, intGen)
             val rand = Random()
             val shrinkable = pairGen(rand)
@@ -104,7 +104,7 @@ class BasicTest : StringSpec() {
         }
 
         "shrink triple" {
-            val intGen = IntegralType.fromTo(0, 10)
+            val intGen = IntegralType.interval(0, 10)
             val tripleGen = ArbitraryKotlinTriple(intGen, intGen, intGen)
             val rand = Random()
             val shrinkable = tripleGen(rand)
@@ -112,7 +112,7 @@ class BasicTest : StringSpec() {
         }
 
         "shrink tuple1" {
-            val intGen = IntegralType.fromTo(0, 10)
+            val intGen = IntegralType.interval(0, 10)
             val tupleGen = ArbitraryTuple(listOf<Generator<*>>(intGen))
             val rand = Random()
             val shrinkable = tupleGen(rand)
@@ -120,7 +120,7 @@ class BasicTest : StringSpec() {
         }
 
         "shrink tuple" {
-            val intGen = IntegralType.fromTo(0, 10)
+            val intGen = IntegralType.interval(0, 10)
             val tupleGen = ArbitraryTuple(listOf<Generator<*>>(intGen, intGen, intGen))
             val rand = Random()
             val shrinkable = tupleGen(rand)

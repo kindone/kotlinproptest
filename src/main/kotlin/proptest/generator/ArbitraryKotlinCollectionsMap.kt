@@ -5,12 +5,11 @@ import org.kindone.proptest.Random
 import org.kindone.proptest.Shrinkable
 import proptest.ContainerGenerator
 import proptest.shrinker.ShrinkableMap
-import proptest.shrinker.ShrinkableSet
 
 class ArbitraryKotlinCollectionsMap<K,V>(val keyGen:Generator<K>, val valueGen:Generator<V>) : ContainerGenerator<Map<K,V>>() {
 
     override operator fun invoke(random:Random):Shrinkable<Map<K,V>> {
-        val size = random.fromTo(minSize, maxSize)
+        val size = random.interval(minSize, maxSize)
         val map = emptyMap<Shrinkable<K>, Shrinkable<V>>().toMutableMap()
         while (map.size < size) {
             val key = keyGen(random)

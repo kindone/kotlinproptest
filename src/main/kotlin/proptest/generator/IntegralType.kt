@@ -66,7 +66,7 @@ object IntegralType {
                 rand.nextInt()
             }
             else
-                rand.fromTo(min, max)
+                rand.interval(min, max)
 
         if(value < min || max < value)
             throw RuntimeException("invalid range")
@@ -87,7 +87,7 @@ object IntegralType {
             value = rand.nextLong()
         }
         else
-            value = rand.fromTo(min, max)
+            value = rand.interval(min, max)
 
         if(value < min || max < value)
             throw RuntimeException("invalid range")
@@ -100,7 +100,7 @@ object IntegralType {
             return binarySearchShrinkable(value)
     }
 
-    fun fromTo(min:Int, max:Int):Generator<Int> {
+    fun interval(min:Int, max:Int):Generator<Int> {
         return object: Generator<Int>() {
             override fun invoke(random: Random): Shrinkable<Int> {
                 return generateInteger(random, min, max)
@@ -108,11 +108,19 @@ object IntegralType {
         }
     }
 
-    fun fromTo(min:Long, max:Long):Generator<Long> {
+    fun inRange(fromInclusive:Int, toExclusive:Int):Generator<Int> {
+        return interval(fromInclusive, toExclusive-1)
+    }
+
+    fun interval(min:Long, max:Long):Generator<Long> {
         return object: Generator<Long>() {
             override fun invoke(random: Random): Shrinkable<Long> {
                 return generateLong(random, min, max)
             }
         }
+    }
+
+    fun inRange(fromInclusive:Long, toExclusive:Long):Generator<Long> {
+        return interval(fromInclusive, toExclusive-1)
     }
 }

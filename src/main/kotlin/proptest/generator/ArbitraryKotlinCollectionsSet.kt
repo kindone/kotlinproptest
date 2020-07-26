@@ -9,7 +9,7 @@ import proptest.shrinker.ShrinkableSet
 class ArbitraryKotlinCollectionsSet<T>(val elemGen:Generator<T>) : ContainerGenerator<Set<T>>() {
 
     override operator fun invoke(random:Random):Shrinkable<Set<T>> {
-        val size = random.fromTo(minSize, maxSize)
+        val size = random.interval(minSize, maxSize)
         val set = emptySet<Shrinkable<T>>().toMutableSet()
         while (set.size < size) {
             set.add(elemGen(random))

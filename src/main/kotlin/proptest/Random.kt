@@ -15,15 +15,14 @@ class Random(val rand:java.util.Random) {
 
     fun nextLong():Long = rand.nextLong()
     fun nextInt():Int = rand.nextInt()
-    // TODO
-    fun nextBoolean(trueProb:Double = 0.5):Boolean = rand.nextBoolean()
+    fun nextBoolean(trueProb:Double = 0.5):Boolean = inRange(0L, 10000000000L) < (10000000000L * trueProb)
     fun nextFloat():Float = rand.nextFloat()
     fun nextDouble():Double = rand.nextDouble()
 
-    fun fromTo(min:Int, max:Int):Int = min + (Math.abs(nextLong().toInt()) % (max+1-min))
-    fun fromTo(min:Long, max:Long):Long = min + (Math.abs(nextLong()) % (max+1-min))
-    fun inRange(from:Int, to:Int):Int = from + (Math.abs(nextLong().toInt()) % (to-from))
-    fun inRange(from:Long, to:Long):Long = from + (Math.abs(nextLong()) % (to-from))
+    fun interval(min:Int, max:Int):Int = min + (Math.abs(nextLong().toInt()) % (max+1-min))
+    fun interval(min:Long, max:Long):Long = min + (Math.abs(nextLong()) % (max+1-min))
+    fun inRange(fromInclusive:Int, toExclusive:Int):Int = fromInclusive + (Math.abs(nextLong().toInt()) % (toExclusive-fromInclusive))
+    fun inRange(fromInclusive:Long, toExclusive:Long):Long = fromInclusive + (Math.abs(nextLong()) % (toExclusive-fromInclusive))
 
     fun clone():Random {
         val bo = ByteArrayOutputStream()

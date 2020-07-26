@@ -9,7 +9,7 @@ import proptest.shrinker.ShrinkableList
 class ArbitraryKotlinCollectionsList<T>(val elemGen:Generator<T>) : ContainerGenerator<List<T>>() {
 
     override operator fun invoke(random:Random):Shrinkable<List<T>> {
-        val size = random.fromTo(minSize, maxSize)
+        val size = random.interval(minSize, maxSize)
         val list = (0 until size).map {
             elemGen(random)
         }

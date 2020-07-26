@@ -4,9 +4,6 @@ import org.kindone.proptest.Generator
 import org.kindone.proptest.Random
 import org.kindone.proptest.Shrinkable
 import proptest.shrinker.ShrinkableTuple
-import proptest.type.NotNull
-import proptest.type.Null
-import proptest.type.Nullable
 import java.lang.reflect.ParameterizedType
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -32,13 +29,6 @@ class Construct {
         }
 
         inline fun <reified T> unbox(obj:Any):Any? {
-            if(T::class == Nullable::class) {
-                val nullable: Nullable<*> = obj as Nullable<*>
-                if(nullable.isNull)
-                    return null
-                else
-                    return (nullable as NotNull<*>).obj
-            }
             if(T::class == Boolean::class) {
                 val unboxed:Boolean? = (obj as Boolean)
                 return unboxed
@@ -76,8 +66,6 @@ class Construct {
         }
 
         inline fun <reified T:Any?> isPrimitive():Boolean {
-            if(T::class == Nullable::class)
-                return false
             if(T::class == Boolean::class)
                 return true
             if(T::class == Byte::class)
@@ -100,11 +88,7 @@ class Construct {
 
         inline fun <reified T : Any?> javaTypeOf(obj:Any? = null):Class<*>? {
             println("javaTypeOf: " + T::class)
-            if(T::class == Nullable::class) {
-                val nullable = (obj!! as Nullable<*>)
-                return if(nullable.isNull) KType::class.java else T::class.java
-            }
-            else if(isPrimitive<T>()) {
+            if(isPrimitive<T>()) {
                 val kc = T::class as KClass<*>
                 return kc.javaPrimitiveType
             }
