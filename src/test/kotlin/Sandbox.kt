@@ -39,6 +39,15 @@ class BasicTest : StringSpec() {
             extract<List<Int>>()
         }
 
+
+        "primitive type equality" {
+            val x = 5
+            val y = 5.5
+            println("x is int?: " + (x::class == Int::class))
+            println("y is int?: " + (y::class == Int::class))
+        }
+
+
         "lambda test" {
             class SomeClass(val i:Int?) {
 

@@ -1,13 +1,14 @@
 package generator
 
 import io.kotest.core.spec.style.StringSpec
-import org.kindone.proptest.Property
 import org.kindone.proptest.Random
 import org.kindone.proptest.generator.ArbitraryKotlinCollectionsList
 import org.kindone.proptest.generator.ArbitraryKotlinString
-import org.kindone.proptest.generator.ArbitraryOrgKindonePropTestTypeNullable
 import org.kindone.proptest.generator.IntegralType
 import proptest.combinator.Construct
+import proptest.combinator.ElementOf
+import proptest.combinator.Just
+import proptest.combinator.OneOf
 import kotlin.reflect.jvm.reflect
 
 class GeneratorTest : StringSpec() {
@@ -17,23 +18,6 @@ class GeneratorTest : StringSpec() {
     }
 
     init {
-//        "Map Property Test" {
-//            val func = { a:Map<Int, Boolean> ->
-//
-//            }
-//
-//            val prop = Property(func)
-//            prop.forAll()
-//        }
-
-        "String Property Test" {
-            val func = { a:String ->
-                println("a:" + a)
-            }
-
-            val prop = Property(func)
-            prop.forAll()
-        }
 
         "Construct1" {
             class SomeClass(val a:String) {
@@ -44,13 +28,6 @@ class GeneratorTest : StringSpec() {
             val rand = Random()
             val shrinkable = someClassGen(rand)
             IntegralType.exhaustive(shrinkable)
-        }
-
-        "primitive" {
-            val x = 5
-            val y = 5.5
-            println("x is int?: " + (x::class == Int::class))
-            println("y is int?: " + (y::class == Int::class))
         }
 
         "Construct1.primitive" {
@@ -108,6 +85,27 @@ class GeneratorTest : StringSpec() {
             val rand = Random()
             val shrinkable = someClassGen(rand)
             IntegralType.exhaustive(shrinkable)
+        }
+
+        "Just" {
+            val gen = Just(3)
+            val rand = Random()
+            for(i in 0..2)
+                IntegralType.exhaustive(gen(rand))
+        }
+
+        "OneOf" {
+            val gen = OneOf(IntegralType.interval(0,1), Just(2))
+            val rand = Random()
+            for(i in 0..4)
+                IntegralType.exhaustive(gen(rand))
+        }
+
+        "ElementOf" {
+            val gen = ElementOf<Int>(0, 1)
+            val rand = Random()
+            for(i in 0..2)
+                IntegralType.exhaustive(gen(rand))
         }
 
 

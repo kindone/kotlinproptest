@@ -5,26 +5,21 @@ import org.kindone.proptest.Random
 import org.kindone.proptest.Shrinkable
 import java.lang.RuntimeException
 
-class OneOf {
-    class Weighted<T>(val gen:Generator<T>, val weight:Double) :  Generator<T>() {
-        override fun invoke(random: Random): Shrinkable<T> {
-            return gen(random)
-        }
-
-    }
+class ElementOf {
+    data class Weighted<T>(val obj:T, val weight:Double)
 
     companion object {
-        inline operator fun<T> invoke(vararg generators: Generator<T>):Generator<T> {
+        inline operator fun<T> invoke(vararg values: Any):Generator<T> {
             var sum  = 0.0
             var numUnassigned = 0
-            var weightedGenerators = generators.map { generator ->
-                if(generator is Weighted<T>) {
-                    sum += generator.weight
-                    generator
+            var weightedGenerators = values.map { value ->
+                if(value is Weighted<*>) {
+                    sum += value.weight
+                    value
                 }
                 else {
                     numUnassigned += 1
-                    Weighted(generator, 0.0)
+                    Weighted(value, 0.0)
                 }
             }
 
@@ -37,7 +32,7 @@ class OneOf {
 
                 weightedGenerators = weightedGenerators.map { weightedGenerator ->
                     if(weightedGenerator.weight == 0.0) {
-                        Weighted(weightedGenerator.gen, perUnussigned)
+                        Weighted(weightedGenerator.obj, perUnussigned)
                     }
                     else
                         weightedGenerator
@@ -48,7 +43,7 @@ class OneOf {
                     while(true) {
                         val dice = random.inRange(0, weightedGenerators.size)
                         if(random.nextBoolean(weightedGenerators[dice].weight)) {
-                            return weightedGenerators[dice].gen(random)
+                            return Shrinkable(weightedGenerators[dice].obj as T)
                         }
                     }
                     weightedGenerators

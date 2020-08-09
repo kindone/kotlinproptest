@@ -24,6 +24,25 @@ abstract class Generator<T> {
         }
     }
 
+    fun <U> flatMap(gen2gen:(T) -> Generator<U>):Generator<U> {
+        val self = this
+
+        return object:Generator<U>() {
+            override fun invoke(random: Random): Shrinkable<U> {
+                val intermediate = self.invoke(random).transform {
+                    Pair(it, gen2gen(it)(random))
+                }
+                return intermediate.andThen { shrinkable: Shrinkable<Pair<T, Shrinkable<U>>> ->
+                    shrinkable.value.second.shrinks().map {
+                        Shrinkable(Pair(shrinkable.value.first, it))
+                    }
+                }.transform {
+                    it.second.value
+                }
+            }
+        }
+    }
+
     fun <U> chain(gen2gen:(T) -> Generator<U>):Generator<Pair<T, U>> {
         val self = this
 
