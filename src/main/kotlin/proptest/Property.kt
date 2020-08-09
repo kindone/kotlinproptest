@@ -1,6 +1,7 @@
 package org.kindone.proptest
 
 import proptest.AssertFailed
+import java.lang.Error
 import java.lang.RuntimeException
 import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
@@ -14,6 +15,7 @@ import kotlin.reflect.jvm.reflect
 class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, val invoker:(Function<Unit>, List<Shrinkable<*>>) -> Unit) {
 
     private var seed:Long = 0
+    var numRuns = defaultNumRuns
 
     fun runner(rand:Random) {
         lateinit var savedRandom:Random
@@ -27,16 +29,20 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
                 invoker(scenario, shrinkables)
                 i ++
             }
+            println("OK, passed " + numRuns + " tests")
         }
         catch(e:AssertFailed) {
             println("Falsifiable, after " + (i + 1) + " tests - assertion failed: " + e.message)
             shrink(savedRandom)
         }
         catch(e:RuntimeException) {
-            println("Falsifiable, after " + (i + 1) + " tests - unhandled exception thrown: " + e.message)
+            println("Falsifiable, after " + (i + 1) + " tests - RuntimeException thrown: " + e.message)
             shrink(savedRandom)
         }
-        println("OK, passed " + numRuns + " tests")
+        catch(e:Error) {
+            println("Falsifiable, after " + (i + 1) + " tests - error thrown: " + e.message)
+            shrink(savedRandom)
+        }
     }
 
     private fun testN(shrinkables:List<Shrinkable<*>>, n:Int, replacement: Shrinkable<*>):Boolean {
@@ -102,7 +108,7 @@ class Property(val scenario:Function<Unit>, val generators:List<Generator<*>>, v
     }
 
     companion object {
-        val numRuns = 10
+        var defaultNumRuns = 1000
 
         // 1 arg
         inline operator fun <reified T1:Any> invoke(noinline f:(T1) -> Unit,
